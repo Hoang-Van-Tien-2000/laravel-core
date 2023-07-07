@@ -1,0 +1,42 @@
+version: '3'
+
+services:
+    app:
+        build:
+            context: .
+            dockerfile: ./Dockerfile
+        ports:
+            - "8000:80"
+        depends_on:
+            - db
+            - mailhog
+        container_name: app
+        volumes:
+            - .:/var/www/html
+        environment:
+#            APP_ENV: local
+#            DB_HOST: localhost
+#            DB_DATABASE: webshop
+#            DB_USERNAME: root
+#            DB_PASSWORD: root
+            - APP_URL=http://localhost:8000
+
+    db:
+        platform: linux/x86_64
+        image: mysql:5.7
+        ports:
+            - "3316:3306"
+        container_name: db
+        volumes:
+            - ./data/db:/var/lib/mysql
+        environment:
+            MYSQL_ROOT_PASSWORD: root
+            MYSQL_DATABASE: webshop
+            MYSQL_PASSWORD: root
+
+    mailhog:
+        image: mailhog/mailhog:latest
+        container_name: mailhog
+        ports:
+            - "8025:8025"
+            - "1025:1025"
